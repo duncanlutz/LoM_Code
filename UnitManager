@@ -29,6 +29,7 @@ public class UnitManager : MonoBehaviour
                 {
                     for (int i = 0; i < units.Count; i++)
                     {
+                        // This calls to the Unit script to move the player to destination.
                         units[i].GetComponent<Unit>().MoveToDestination(hit.point);
 
                     }
