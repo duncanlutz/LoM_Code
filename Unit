@@ -1,0 +1,66 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+[RequireComponent(typeof(Outline))]
+[RequireComponent(typeof(NavMeshAgent))]
+public class Unit : MonoBehaviour
+{
+    public NavMeshAgent nv;
+    public Interactable focus;
+
+    Transform target;
+    UnitMotor motor;
+    public Animator animator;
+    Outline outline;
+    UnitManager um;
+    CharacterCombat combatManager;
+    BoxCollider bCollider;
+
+
+
+    void Start()
+    {
+        nv = this.GetComponent<NavMeshAgent>();
+        outline = GetComponent<Outline>();
+        um = GameObject.Find("Unit Manager").GetComponent<UnitManager>();
+        motor = GetComponent<UnitMotor>();
+        outline.OutlineColor = Color.yellow;
+    }
+
+    void Update()
+    {
+    
+    }
+    
+    // Simple move NavMeshAgent script, but a good example of how to
+    //incorporate functions from the unit script into the Unit Manager.
+    public void MoveToDestination(Vector3 point)
+    {
+        nv.SetDestination(point);
+    }
+
+    public void SetFocus(Interactable newFocus)
+    {
+        if (newFocus != focus)
+        {
+            if (focus != null)
+                focus.OnDefocused();
+
+            focus = newFocus;
+            motor.FollowTarget(newFocus);
+        }
+
+        newFocus.OnFocused(transform);
+    }
+
+    public void RemoveFocus()
+    {
+        if (focus != null)
+            focus.OnDefocused();
+
+        focus = null;
+        motor.StopFollowingTarget();
+    }
+}
