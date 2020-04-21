@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class PlayerControlManager : MonoBehaviour
+{
+
+    public UnitManager UM;
+    Camera cam;
+    Renderer myRenderer;
+
+    void Start()
+    {
+        cam = Camera.main;
+        myRenderer = GetComponent<Renderer>();
+
+    }
+
+    void Update()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (!Input.GetKey(KeyCode.LeftShift))
+                {
+                   UM.units.Clear();
+                }
+
+                if (hit.collider.tag == "Unit")
+                {
+                    if (!UM.units.Contains(hit.collider.gameObject))
+                    {
+                        Debug.Log("Hit Unit at " + Time.time);
+                        UM.units.Add(hit.collider.gameObject);
+                    }
+                }
+
+                if (hit.collider.tag == "Ground")
+                {
+                    Debug.Log("Hit Ground at " + Time.time);
+                    UM.units.Clear();
+                }
+            }
+        }
+    }
+}
